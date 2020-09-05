@@ -46,7 +46,7 @@ const editPartner = (ms = 0) => {
 
 async function destroyPopup(popup) {
   popup.classList.remove('open');
-  await editPartner(1000);
+  await editPartner(100);
   // remove it from the DOM
   popup.remove();
   // remove it from the js memory
@@ -68,75 +68,110 @@ const editPartnerPopup = (e) => {
           popup.classList.add('popup');
           popup.insertAdjacentHTML('afterbegin', `
             <fieldset>
-              <label></label>
-              <input type="text" name="input" value="${lastName}"/>
+              <label for="name"></label>
+              <input type="text" name="inputLastName" value="${lastName}" id="name"/>
             </fieldset>
             <fieldset>
-              <label></label>
-              <input type="text" name="input" value="${firstName}"/>
+              <label for="firstName"></label>
+              <input type="text" name="inputFirstName" value="${firstName}" id="firstName"/>
             </fieldset>
             <fieldset>
-              <label>Job title</label>
-              <input type="text" name="input"  value="${jobTitle}"/>
+              <label for="jobTitle">Job title</label>
+              <input type="text" name="inputJobTitle" value="${jobTitle}" id="obTitle"/>
             </fieldset>
             <fieldset>
-              <label>Job area</label>
-              <input type="text" name="input" value="${jobArea}"/>
+              <label for="jobArea">Job area</label>
+              <input type="text" name="inputJobArea" value="${jobArea}" id="jobArea"/>
             </fieldset>
             <fieldset>
-              <label>Phone number</label>
-              <input type="text" name="input" value="${phone}"/>
+              <label for="phone">Phone number</label>
+              <input type="tel" name="inputPnone" value="${phone}" id="phone"/>
             </fieldset>
             <div>
-              <button type="submit" class="submit-btn">Add the form</button>
-              <button type="button" class="cancel-btn">Cancel the form</button>
+              <button type="submit" class="submit-btn">Save the form</button>
+              <button type="button" class="cancelForm">Cancel the form</button>
             </div>
           `);
-
-          if(person.cancel) {
-            const skipButton = document.createElement('button');
-            skipButton.type = 'button'; // so it doesn't submit
-            skipButton.textContent = 'Cancel';
-            console.log(popup.firstChild);
-            popup.firstElementChild.appendChild(skipButton);
-            // TODO: listen for a click on that cancel button
-            skipButton.addEventListener('click', () => {
-              resolve(null);
-              destroyPopup(popup);
-            },
-            { once: true})
-          }
-
-          // listen for the submit event on the inputs
           popup.addEventListener('submit', (e) => {
             e.preventDefault();
-            // console.log('submit');
-            resolve(e.target.input.value);
-          },
-          { once: true}
-        );
-
-          // when someone does submit it, resolve the data tht was in the input box
-          // insert tht popup in the  DOM
+            // const formEL = e.currentTarget;
+            const lastNameInput = e.target.inputLastName.value;
+            const firstNameInput = e.target.inputFirstName.value;
+            const jobTitleInput = e.target.inputJobTitle.value;
+            const jobAreaInput= e.target.inputJobArea.value;
+            const phoneNumberInput = e.target.inputPnone.value;
+            // Put the content of the input
+            firstNameInput.textContent = firstNameInput;
+            lastNameInput.textContent = lastNameInput;
+            jobAreaInput.textContent = jobAreaInput;
+            jobTitleInput.textContent = jobTitleInput;
+            phoneNumberInput.textContent = phoneNumberInput;
+          });
+        // when someone does submit it, resolve the data tht was in the input box
+        // insert tht popup in the  DOM
           document.body.appendChild(popup);
-
           //put a very small titmeout before we add the open class
-          await editPartner(50);
+          await editPartner(10);
           popup.classList.add('open');
         });
       };
     };
 
+    const cancelForm = (e) => {
+      if(e.target.closest('button.cancelForm')) {
+        console.log('delete me');
+        const form = document.querySelector('.popup')
+          form.classList.remove('open');
+      }
+    }
 
-const deletePartner = () => {
-	// code delete function gere
+const deletePartner = (ms = 0) => {
+  return new Promise(resolve => setTimeout(resolve, ms));
 };
 
-const deleteDeletePopup = () => {
-	// create confirmation popup here
+const deleteDeletePopup = (e) => {
+  // create confirmation popup here
+  if(e.target.closest('button.delete')) {
+    return new Promise(async function(resolve) {
+       const div = document.createElement('div');
+       div.classList.add('deleteBtnContainer');
+       div.insertAdjacentHTML('Afterbegin', `
+          <p>Are you sure you to delete it</p>
+          <button type="button" class="confirm">Yes</button>
+          <button type="button" class="cancel">No</button>
+      `);
+      document.body.appendChild(div);
+      //put a very small titmeout before we add the open class
+      await editPartner(10);
+      div.classList.add('open');
+    });
+  };
+
 };
+
+const deletePop = (e) => {
+  return new Promise(async function() {
+    if(e.target.closest('button.confirm')) {
+      const tr = document.querySelector('.container');
+      // console.log(tr);
+      destroyPopup(tr);
+    }
+    if(e.target.closest('button.cancel')) {
+      const divEL = document.querySelector('.deleteBtnContainer');
+      console.log(divEL);
+      divEL.classList.remove('open');
+    };
+  });
+};
+
+const cancelDeleteBtn = () => {
+
+}
 
 displayList(persons);
 
 
 window.addEventListener('click', editPartnerPopup);
+window.addEventListener('click', deleteDeletePopup);
+window.addEventListener('click', deletePop);
+window.addEventListener('click', cancelForm);
