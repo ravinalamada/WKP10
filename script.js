@@ -150,28 +150,31 @@ const deleteDeletePopup = (e) => {
 };
 
 const deletePop = (e) => {
-  return new Promise(async function() {
+  return new Promise(async function(resolve) {
     if(e.target.closest('button.confirm')) {
       const tr = document.querySelector('.container');
       // console.log(tr);
       destroyPopup(tr);
-    }
-    if(e.target.closest('button.cancel')) {
+
+      await editPartner(5);
       const divEL = document.querySelector('.deleteBtnContainer');
       console.log(divEL);
       divEL.classList.remove('open');
-    };
+    }
   });
 };
 
-const cancelDeleteBtn = () => {
-
+const cancelDeleteBtn = (e) => {
+  if(e.target.closest('button.cancel')) {
+    const divEL = document.querySelector('.deleteBtnContainer');
+    divEL.classList.remove('open');
+  };
 }
 
 displayList(persons);
-
 
 window.addEventListener('click', editPartnerPopup);
 window.addEventListener('click', deleteDeletePopup);
 window.addEventListener('click', deletePop);
 window.addEventListener('click', cancelForm);
+window.addEventListener('click', cancelDeleteBtn);
