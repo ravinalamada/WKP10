@@ -159,7 +159,6 @@ const deletePop = (e) => {
       await editPartner(5);
       const divEL = document.querySelector('.deleteBtnContainer');
       console.log(divEL);
-      // divEL.classList.remove('open');
       destroyPopup(divEL);
     }
   });
@@ -168,7 +167,6 @@ const deletePop = (e) => {
 const cancelDeleteBtn = (e) => {
   if(e.target.closest('button.cancel')) {
     const divEL = document.querySelector('.deleteBtnContainer');
-    // divEL.classList.remove('open');
     destroyPopup(divEL);
   };
 }
