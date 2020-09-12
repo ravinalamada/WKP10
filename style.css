@@ -102,7 +102,7 @@ tr:hover {
 }
 
 .popup {
-	background: hsla(0, 0%, 30%, 0.5);
+	background: yellow;
 	position: fixed;
 	height: 100%;
 	width: 50%;
@@ -113,7 +113,9 @@ tr:hover {
 	align-items: center;
 	pointer-events: none;
 	--opacity: 0;
-	opacity: var(--opacity);
+  opacity: var(--opacity);
+  border-radius: 1rem;
+  margin-left: 25%;
 }
 
 .popup fieldset {

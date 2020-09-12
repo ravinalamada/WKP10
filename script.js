@@ -26,7 +26,7 @@ const displayList = data => {
         <td class="jobArea">${person.jobArea}</td>
         <td class="phone">${person.phone}</td>
         <td class="">
-            <button class="edit">
+            <button class="edit" value="${person.id}">
                 <svg viewBox="0 0 20 20" fill="currentColor" class="pencil w-6 h-6"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"></path></svg>
             </button>
             <button class="delete">
@@ -39,9 +39,19 @@ const displayList = data => {
     .join('');
 };
 
-const editPartner = (ms = 0) => {
+const editPartner = (ms= 0,) => {
   return new Promise(resolve => setTimeout(resolve, ms));
-	// code edit function here
+  // code edit function here
+};
+
+const editPartnerBtn = (e) => {
+  const btnEdit = e.target.closest('.edit');
+  if(btnEdit) {
+    const tr = e.target.closest('.container');
+    const btn = tr.querySelector('.edit')
+    const id = btn.value;
+    editPartnerPopup(id);
+  }
 };
 
 async function destroyPopup(popup) {
@@ -53,39 +63,31 @@ async function destroyPopup(popup) {
   popup = null;
 }
 
-const editPartnerPopup = (e) => {
-  const editBtn = e.target;
-  if(editBtn.closest('button.edit')) {
-    console.log('coloo');
-      const parents = e.target.closest('.container');
-      const lastName = parents.querySelector('.lastName').textContent;
-      const firstName = parents.querySelector('.firstName').textContent;
-      const jobTitle = parents.querySelector('.jobTitle').textContent;
-      const jobArea = parents.querySelector('.jobArea').textContent;
-      const phone = parents.querySelector('.phone').textContent;
+const editPartnerPopup = (id) => {
+  const personId = persons.find(person => person.id === id);
         return new Promise(async function(resolve) {
           const popup = document.createElement('form');
           popup.classList.add('popup');
           popup.insertAdjacentHTML('afterbegin', `
             <fieldset>
               <label for="name"></label>
-              <input type="text" name="inputLastName" value="${lastName}" id="name"/>
+              <input type="text" name="lastName" value="${personId.lastName}"/>
             </fieldset>
             <fieldset>
               <label for="firstName"></label>
-              <input type="text" name="inputFirstName" value="${firstName}" id="firstName"/>
+              <input type="text" name="firstName" value="${personId.firstName}"/>
             </fieldset>
             <fieldset>
               <label for="jobTitle">Job title</label>
-              <input type="text" name="inputJobTitle" value="${jobTitle}" id="obTitle"/>
+              <input type="text" name="jobTitle" value="${personId.jobArea}"/>
             </fieldset>
             <fieldset>
               <label for="jobArea">Job area</label>
-              <input type="text" name="inputJobArea" value="${jobArea}" id="jobArea"/>
+              <input type="text" name="jobArea" value="${personId.jobTitle}"/>
             </fieldset>
             <fieldset>
               <label for="phone">Phone number</label>
-              <input type="tel" name="inputPnone" value="${phone}" id="phone"/>
+              <input type="tel" name="phone" value="${personId.phone}"/>
             </fieldset>
             <div>
               <button type="submit" class="submit-btn">Save the form</button>
@@ -94,20 +96,17 @@ const editPartnerPopup = (e) => {
           `);
           popup.addEventListener('submit', (e) => {
             e.preventDefault();
-            // const formEL = e.currentTarget;
-            const lastNameInput = e.target.inputLastName.value;
-            const firstNameInput = e.target.inputFirstName.value;
-            const jobTitleInput = e.target.inputJobTitle.value;
-            const jobAreaInput= e.target.inputJobArea.value;
-            const phoneNumberInput = e.target.inputPnone.value;
-            // Put the content of the input
-            firstNameInput.textContent = firstNameInput;
-            lastNameInput.textContent = lastNameInput;
-            jobAreaInput.textContent = jobAreaInput;
-            jobTitleInput.textContent = jobTitleInput;
-            phoneNumberInput.textContent = phoneNumberInput;
+            const form = e.target;
+            personId.lastName = form.lastName.value;
+            personId.firstName = form.firstName.value;
+            personId.jobTitle = form.jobTitle.value;
+            personId.jobArea = form.jobArea.value;
+            personId.phone = form.phone.value;
+            displayList(persons);
+
+            // await editPartner(10);
+            destroyPopup(popup);
           });
-        // when someone does submit it, resolve the data tht was in the input box
         // insert tht popup in the  DOM
           document.body.appendChild(popup);
           //put a very small titmeout before we add the open class
@@ -115,13 +114,12 @@ const editPartnerPopup = (e) => {
           popup.classList.add('open');
         });
       };
-    };
 
     const cancelForm = (e) => {
       if(e.target.closest('button.cancelForm')) {
         console.log('delete me');
         const form = document.querySelector('.popup')
-          form.classList.remove('open');
+          destroyPopup(form);
       }
     }
 
@@ -129,7 +127,7 @@ const deletePartner = (ms = 0) => {
   return new Promise(resolve => setTimeout(resolve, ms));
 };
 
-const deleteDeletePopup = (e) => {
+const deletePopup = (e) => {
   // create confirmation popup here
   if(e.target.closest('button.delete')) {
     return new Promise(async function(resolve) {
@@ -153,7 +151,6 @@ const deletePop = (e) => {
   return new Promise(async function(resolve) {
     if(e.target.closest('button.confirm')) {
       const tr = document.querySelector('.container');
-      // console.log(tr);
       destroyPopup(tr);
 
       await editPartner(5);
@@ -161,20 +158,17 @@ const deletePop = (e) => {
       console.log(divEL);
       destroyPopup(divEL);
     }
+
+    if(e.target.closest('button.cancel')) {
+      const divEL = document.querySelector('.deleteBtnContainer');
+      destroyPopup(divEL);
+    };
   });
 };
 
-const cancelDeleteBtn = (e) => {
-  if(e.target.closest('button.cancel')) {
-    const divEL = document.querySelector('.deleteBtnContainer');
-    destroyPopup(divEL);
-  };
-}
-
 displayList(persons);
 
-window.addEventListener('click', editPartnerPopup);
-window.addEventListener('click', deleteDeletePopup);
+window.addEventListener('click', deletePopup);
 window.addEventListener('click', deletePop);
 window.addEventListener('click', cancelForm);
-window.addEventListener('click', cancelDeleteBtn);
+window.addEventListener('click', editPartnerBtn);
