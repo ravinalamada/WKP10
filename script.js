@@ -140,16 +140,12 @@ const deletePopup = (e) => {
       `);
       document.body.appendChild(div);
       //put a very small titmeout before we add the open class
-      await editPartner(10);
+      await deletePartner(10);
       div.classList.add('open');
     });
   };
 
 };
-
-const filterdPerson = (id) => {
-  persons = persons.filter(person.id !== id);
-}
 
 const deletePop = (e) => {
   return new Promise(async function(resolve) {
