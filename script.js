@@ -39,7 +39,7 @@ const displayList = data => {
     .join('');
 };
 
-const editPartner = (ms= 0,) => {
+const editPartner = (ms = 0) => {
   return new Promise(resolve => setTimeout(resolve, ms));
   // code edit function here
 };
@@ -107,7 +107,7 @@ const editPartnerPopup = (id) => {
             // await editPartner(10);
             destroyPopup(popup);
           });
-        // insert tht popup in the  DOM
+        // insert tht popup in the DOM
           document.body.appendChild(popup);
           //put a very small titmeout before we add the open class
           await editPartner(10);
@@ -147,15 +147,19 @@ const deletePopup = (e) => {
 
 };
 
+const filterdPerson = (id) => {
+  persons = persons.filter(person.id !== id);
+}
+
 const deletePop = (e) => {
   return new Promise(async function(resolve) {
-    if(e.target.closest('button.confirm')) {
+    const deleteBtn = e.target.closest('button.confirm');
+    if(deleteBtn) {
       const tr = document.querySelector('.container');
       destroyPopup(tr);
 
       await editPartner(5);
       const divEL = document.querySelector('.deleteBtnContainer');
-      console.log(divEL);
       destroyPopup(divEL);
     }
 
